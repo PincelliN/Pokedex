@@ -3,10 +3,54 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Importazione di Axios per fare richieste HTTP -->
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.3/axios.min.js"
+      integrity="sha512-zJXKBryKlsiDaWcWQ9fuvy50SG03/Qc5SqfLXxHmk9XiUUbcD9lXYjHDBxLFOuZSU6ULXaJ69bd7blSMEgxXNQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <!-- Collegamento del file CSS -->
     <link rel="stylesheet" href="./css/style.css" />
     <title>Pokedex</title>
   </head>
   <body>
-    <script href="./js/main.js"></script>
+    <div id="app">
+      <!-- Etichetta per il menu a tendina di selezione del tipo -->
+      <label for="type">Scelti il tipo che preferisci</label>
+      <!-- 
+        Dropdown per la selezione del tipo di Pokémon 
+        Evento che chiama la funzione filterByType() al cambiamento della selezione Associa la variabile typeIndex al valore selezionato
+        -->
+      <select
+        @change="this.filterByType()"
+        name="type"
+        id="Type"
+        v-model="this.typeIndex"
+      >
+        <!-- Opzione predefinita per nessuna selezione -->
+        <option value="0">---</option>
+        <!-- Popola le opzioni del menù a tendina con i tipi di Pokémon -->
+        <option v-for="(type,index) in this.typeList" :value="index + 1 ">
+          {{type.name}}
+          <!-- Visualizza il nome del tipo -->
+        </option>
+      </select>
+
+      <!-- Lista di tutti i Pokémon, visibile solo quando non è selezionato nessun tipo specifico (typeIndex == 0) -->
+      <ul v-show="typeIndex == 0">
+        <li v-for="Pokemon in this.PokemonList">{{Pokemon.name}}</li>
+      </ul>
+
+      <!-- Lista dei Pokémon filtrati per tipo, visibile solo quando è selezionato un tipo specifico (typeIndex > 0) -->
+      <ul v-show="typeIndex > 0">
+        <li v-for="Pokemon in this.PokemonListType">{{Pokemon.name}}</li>
+      </ul>
+    </div>
+
+    <!-- Importazione di Vue.js -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <!-- Collegamento del file JavaScript principale -->
+    <script type="text/Javascript" src="./js/main.js"></script>
   </body>
 </html>
