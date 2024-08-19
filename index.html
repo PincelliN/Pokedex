@@ -16,36 +16,51 @@
   </head>
   <body>
     <div id="app">
-      <!-- Etichetta per il menu a tendina di selezione del tipo -->
-      <label for="type">Scelti il tipo che preferisci</label>
-      <!-- 
-        Dropdown per la selezione del tipo di Pokémon 
-        Evento che chiama la funzione filterByType() al cambiamento della selezione Associa la variabile typeIndex al valore selezionato
-        -->
-      <select
-        @change="this.filterByType()"
-        name="type"
-        id="Type"
-        v-model="this.typeIndex"
-      >
-        <!-- Opzione predefinita per nessuna selezione -->
-        <option value="0">---</option>
-        <!-- Popola le opzioni del menù a tendina con i tipi di Pokémon -->
-        <option v-for="(type,index) in this.typeList" :value="index + 1 ">
-          {{type.name}}
-          <!-- Visualizza il nome del tipo -->
-        </option>
-      </select>
+      <div v-if="loading">
+        <!-- Indicatore di caricamento -->
+        <p>Loading...</p>
+      </div>
 
-      <!-- Lista di tutti i Pokémon, visibile solo quando non è selezionato nessun tipo specifico (typeIndex == 0) -->
-      <ul v-show="typeIndex == 0">
-        <li v-for="Pokemon in this.PokemonList">{{Pokemon.name}}</li>
-      </ul>
+      <div v-else>
+        <!-- Contenuto dell'app dopo il caricamento -->
+        <div class="filter">
+          <label for="type">Scelti il tipo che preferisci</label>
+          <select
+            @change="this.filterByType()"
+            name="type"
+            id="Type"
+            v-model="this.typeIndex"
+          >
+            <option value="0">---</option>
+            <option v-for="(type,index) in this.typeList" :value="index + 1">
+              {{type.name}}
+            </option>
+          </select>
+        </div>
 
-      <!-- Lista dei Pokémon filtrati per tipo, visibile solo quando è selezionato un tipo specifico (typeIndex > 0) -->
-      <ul v-show="typeIndex > 0">
-        <li v-for="Pokemon in this.PokemonListType">{{Pokemon.name}}</li>
-      </ul>
+        <div class="container">
+          <div v-for="pokemon in this.pokemons" class="card">
+            <img
+              :src="pokemon.sprites.other['official-artwork'].front_default"
+              alt="immagine pokemon"
+            />
+            <p>{{pokemon.id}}</p>
+            <h4>{{pokemon.name }}</h4>
+            <button>{{pokemon.types[0].type.name}}</button>
+            <button v-if="pokemon.types[1]">
+              {{pokemon.types[1].type.name}}
+            </button>
+          </div>
+        </div>
+
+        <ul v-show="typeIndex == 0">
+          <li v-for="Pokemon in this.PokemonList">{{Pokemon.name}}</li>
+        </ul>
+
+        <ul v-show="typeIndex > 0">
+          <li v-for="Pokemon in this.PokemonListType">{{Pokemon.name}}</li>
+        </ul>
+      </div>
     </div>
 
     <!-- Importazione di Vue.js -->

@@ -10,6 +10,9 @@ createApp({
       PokemonListType: [], // Lista di Pokémon filtrati per tipo
       typeList: [], // Lista di tutti i tipi di Pokémon ottenuti dall'API
       typeIndex: 0, // Indice del tipo di Pokémon selezionato dall'utente
+      ListAllPokemon: [],
+      pokemons: [],
+      loading: true, // Variabile per indicare lo stato di caricamento
     };
   },
   methods: {
@@ -27,8 +30,27 @@ createApp({
       axios.get(Api).then((res) => {
         // console.log(res.data.results);  Stampa i risultati nel console
         this.PokemonList = res.data.results; // Salva i risultati nella lista dei Pokémon
-        // console.log(this.PokemonList);  Stampa la lista dei Pokémon nel console
+        if (this.PokemonList.length > 0) {
+          // Crea un array di promesse per ottenere i dettagli di ogni Pokémon
+          const requests = this.PokemonList.map((pokemon) =>
+            axios.get(pokemon.url)
+          );
+
+          // Usa Promise.all per attendere il completamento di tutte le richieste API
+          Promise.all(requests).then((responses) => {
+            // Aggiunge i dettagli di ogni Pokémon alla lista ListAllPokemon
+            this.ListAllPokemon = responses.map((response) => response.data);
+
+            // Ordina i Pokémon per ID
+            this.pokemons = this.ListAllPokemon.sort((a, b) => a.id - b.id);
+
+            console.log(this.pokemons);
+            // Imposta loading a false una volta completato il caricamento
+            this.loading = false;
+          });
+        }
       });
+      //    console.log(res.data.results[this.PokemonList.length].name);  Stampa la lista dei Pokémon nel console
     },
 
     // Metodo per ottenere tutti i tipi di Pokémon dalla PokeAPI
@@ -49,7 +71,7 @@ createApp({
         this.PokemonListType = [];
         ApitypeFilter = this.ulrApi + "type/" + this.typeIndex;
 
-        console.log(ApitypeFilter);
+        // console.log(ApitypeFilter);
 
         // Chiamata GET all'API per ottenere i Pokémon di un determinato tipo
         axios.get(ApitypeFilter).then((res) => {
@@ -58,7 +80,6 @@ createApp({
           // Itera su ogni Pokémon ottenuto dal filtro
           filterType.forEach((element) => {
             const pokeName = element.pokemon.name; // Nome del Pokémon corrente
-
             // Utilizza il metodo some() per controllare se c'è una corrispondenza nel nome
             if (this.PokemonList.some((pokemon) => pokemon.name === pokeName)) {
               this.PokemonListType.push(element.pokemon); // Aggiunge il Pokémon filtrato alla lista
@@ -69,11 +90,14 @@ createApp({
       }
     },
   },
-
   // Hook del ciclo di vita: eseguito quando il componente è montato
   mounted() {
-    console.log("Ciao"); // Stampa un messaggio nel console per indicare che il componente è montato
-    this.GetAll(); // Chiama il metodo per ottenere tutti i Pokémon
+    console.log("Ciao"); // Stampa un messaggio nel console per indicare che il       componente è montato
+    this.GetAll();
     this.GetAllType(); // Chiama il metodo per ottenere tutti i tipi di Pokémon
   },
 }).mount("#app"); // Monta il componente nell'elemento con id "app"
+
+/* 
+{name: 'bulbasaur', url: 'https://pokeapi.co/api/v2/pokemon/1/'}
+{name: 'bulbasaur', url: 'https://pokeapi.co/api/v2/pokemon/1/'} */

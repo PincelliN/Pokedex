@@ -3,3 +3,25 @@
   margin: 0;
   box-sizing: border-box;
 }
+
+#app {
+  width: 80%;
+  margin: 0 auto;
+}
+.filter {
+  text-align: end;
+}
+
+.container {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.card {
+  flex-basis: 25%;
+  padding: 5px;
+}
+.card img {
+  width: 100%;
+}
