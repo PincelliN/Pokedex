@@ -7,97 +7,81 @@ createApp({
       maxnumber: 151, // Numero massimo di Pokémon da ottenere (limite)
       offset: 0, // Offset per l'API, utilizzato per la paginazione
       PokemonList: [], // Lista di tutti i Pokémon ottenuti dall'API
+      ListAllPokemon: [], // Lista di tutti i dettagli dei Pokémon ottenuti
+      pokemons: [], // Lista dei Pokémon ordinati per ID
       PokemonListType: [], // Lista di Pokémon filtrati per tipo
       typeList: [], // Lista di tutti i tipi di Pokémon ottenuti dall'API
       typeIndex: 0, // Indice del tipo di Pokémon selezionato dall'utente
-      ListAllPokemon: [],
-      pokemons: [],
       loading: true, // Variabile per indicare lo stato di caricamento
+      pokemonPerPagina: 20, // Numero di Pokémon per pagina
+      Page: 1, // Pagina attuale
     };
   },
+
   methods: {
     // Metodo per ottenere tutti i Pokémon dalla PokeAPI
     GetAll() {
-      Api =
-        this.ulrApi +
-        "pokemon/?limit=" +
-        this.maxnumber +
-        "&offset=" +
-        this.offset;
-      console.log(Api);
+      const Api = `${this.ulrApi}pokemon/?limit=${this.maxnumber}&offset=${this.offset}`;
+      axios.get(Api).then((response) => {
+        this.PokemonList = response.data.results;
 
-      // Chiamata GET all'API per ottenere la lista dei Pokémon
-      axios.get(Api).then((res) => {
-        // console.log(res.data.results);  Stampa i risultati nel console
-        this.PokemonList = res.data.results; // Salva i risultati nella lista dei Pokémon
         if (this.PokemonList.length > 0) {
-          // Crea un array di promesse per ottenere i dettagli di ogni Pokémon
-          const requests = this.PokemonList.map((pokemon) =>
+          const pokemonUrl = this.PokemonList.map((pokemon) =>
             axios.get(pokemon.url)
           );
-
-          // Usa Promise.all per attendere il completamento di tutte le richieste API
-          Promise.all(requests).then((responses) => {
-            // Aggiunge i dettagli di ogni Pokémon alla lista ListAllPokemon
+          Promise.all(pokemonUrl).then((responses) => {
             this.ListAllPokemon = responses.map((response) => response.data);
-
-            // Ordina i Pokémon per ID
             this.pokemons = this.ListAllPokemon.sort((a, b) => a.id - b.id);
-
-            console.log(this.pokemons);
-            // Imposta loading a false una volta completato il caricamento
             this.loading = false;
           });
         }
       });
-      //    console.log(res.data.results[this.PokemonList.length].name);  Stampa la lista dei Pokémon nel console
     },
 
     // Metodo per ottenere tutti i tipi di Pokémon dalla PokeAPI
     GetAllType() {
-      Apitype = this.ulrApi + "type/";
-
-      // console.log(Apitype);
-
-      // Chiamata GET all'API per ottenere la lista dei tipi di Pokémon
+      const Apitype = `${this.ulrApi}type/`;
       axios.get(Apitype).then((restype) => {
-        this.typeList = restype.data.results; // Salva i risultati nella lista dei tipi
+        this.typeList = restype.data.results;
       });
     },
 
     // Metodo per filtrare i Pokémon per tipo
-    filterByType() {
-      if (this.typeIndex > 0) {
-        this.PokemonListType = [];
-        ApitypeFilter = this.ulrApi + "type/" + this.typeIndex;
+    filterByType() {},
 
-        // console.log(ApitypeFilter);
+    // Metodo per andare alla pagina successiva
+    nextPage() {
+      if (this.Page < this.pagineTotali) {
+        this.Page++;
+        console.log("Next Page:", this.Page);
+      }
+    },
 
-        // Chiamata GET all'API per ottenere i Pokémon di un determinato tipo
-        axios.get(ApitypeFilter).then((res) => {
-          filterType = res.data.pokemon; // Salva i Pokémon filtrati per tipo
-
-          // Itera su ogni Pokémon ottenuto dal filtro
-          filterType.forEach((element) => {
-            const pokeName = element.pokemon.name; // Nome del Pokémon corrente
-            // Utilizza il metodo some() per controllare se c'è una corrispondenza nel nome
-            if (this.PokemonList.some((pokemon) => pokemon.name === pokeName)) {
-              this.PokemonListType.push(element.pokemon); // Aggiunge il Pokémon filtrato alla lista
-            }
-          });
-          console.log(this.PokemonListType); // Stampa la lista filtrata dei Pokémon
-        });
+    // Metodo per andare alla pagina precedente
+    prevPage() {
+      if (this.Page > 1) {
+        this.Page--;
+        console.log("Previous Page:", this.Page);
       }
     },
   },
-  // Hook del ciclo di vita: eseguito quando il componente è montato
-  mounted() {
-    console.log("Ciao"); // Stampa un messaggio nel console per indicare che il       componente è montato
-    this.GetAll();
-    this.GetAllType(); // Chiama il metodo per ottenere tutti i tipi di Pokémon
-  },
-}).mount("#app"); // Monta il componente nell'elemento con id "app"
 
-/* 
-{name: 'bulbasaur', url: 'https://pokeapi.co/api/v2/pokemon/1/'}
-{name: 'bulbasaur', url: 'https://pokeapi.co/api/v2/pokemon/1/'} */
+  computed: {
+    // Calcolo del numero totale di pagine
+    pagineTotali() {
+      return Math.ceil(this.pokemons.length / this.pokemonPerPagina);
+    },
+
+    // Restituisce i Pokémon della pagina corrente
+    pokemonInPagina() {
+      const start = (this.Page - 1) * this.pokemonPerPagina;
+      const end = start + this.pokemonPerPagina;
+      return this.pokemons.slice(start, end);
+    },
+  },
+
+  mounted() {
+    this.GetAll();
+    this.GetAllType();
+  },
+}).mount("#app");

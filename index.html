@@ -32,34 +32,31 @@
             v-model="this.typeIndex"
           >
             <option value="0">---</option>
-            <option v-for="(type,index) in this.typeList" :value="index + 1">
+            <option v-for="(type,index) in this.typeList" :value="type.name">
               {{type.name}}
             </option>
           </select>
         </div>
-
-        <div class="container">
-          <div v-for="pokemon in this.pokemons" class="card">
-            <img
-              :src="pokemon.sprites.other['official-artwork'].front_default"
-              alt="immagine pokemon"
-            />
-            <p>{{pokemon.id}}</p>
-            <h4>{{pokemon.name }}</h4>
-            <button>{{pokemon.types[0].type.name}}</button>
-            <button v-if="pokemon.types[1]">
-              {{pokemon.types[1].type.name}}
-            </button>
+        <div class="page">
+          <div class="container">
+            <div v-for="pokemon in this.pokemonInPagina" class="card">
+              <img
+                :src="pokemon.sprites.other['official-artwork'].front_default"
+                alt="immagine pokemon"
+              />
+              <p>{{ pokemon.id}}</p>
+              <h4>{{pokemon.name }}</h4>
+              <button>{{pokemon.types[0].type.name}}</button>
+              <button v-if="pokemon.types[1]">
+                {{pokemon.types[1].type.name}}
+              </button>
+            </div>
           </div>
         </div>
-
-        <ul v-show="typeIndex == 0">
-          <li v-for="Pokemon in this.PokemonList">{{Pokemon.name}}</li>
-        </ul>
-
-        <ul v-show="typeIndex > 0">
-          <li v-for="Pokemon in this.PokemonListType">{{Pokemon.name}}</li>
-        </ul>
+        <div class="pagination-button">
+          <button @click="prevPage">Prev</button>
+          <button @click="nextPage">Next</button>
+        </div>
       </div>
     </div>
 
