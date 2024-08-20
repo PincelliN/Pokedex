@@ -26,20 +26,33 @@
         <div class="filter">
           <label for="type">Scelti il tipo che preferisci</label>
           <select
-            @change="this.filterByType()"
+            @change="this.filterByType"
             name="type"
             id="Type"
             v-model="this.typeIndex"
           >
-            <option value="0">---</option>
+            <option value="0">All</option>
             <option v-for="(type,index) in this.typeList" :value="type.name">
               {{type.name}}
             </option>
           </select>
+          <label for="Name">Nome del tuo pokemon preferito</label>
+          <input
+            @keyup="filterName"
+            type="text"
+            name="Name"
+            v-model="this.Pokename"
+          />
         </div>
         <div class="page">
           <div class="container">
-            <div v-for="pokemon in this.pokemonInPagina" class="card">
+            <div
+              v-show="this.PokemonSelect === null"
+              v-for="pokemon in this.pokemonInPagina"
+              :key="pokemon.id"
+              class="card"
+              @click="ChoosePokemon(pokemon.id)"
+            >
               <img
                 :src="pokemon.sprites.other['official-artwork'].front_default"
                 alt="immagine pokemon"
@@ -50,6 +63,41 @@
               <button v-if="pokemon.types[1]">
                 {{pokemon.types[1].type.name}}
               </button>
+            </div>
+            <div v-if="this.PokemonSelect !== null" class="card">
+              <img
+                :src="this.PokemonSelect.sprites.other['official-artwork'].front_default"
+                alt="artwork pokemon"
+              />
+              <img :src="this.PokemonSelect.sprites.back_default" alt="bank" />
+              <img
+                :src="this.PokemonSelect.sprites.front_default"
+                alt="front"
+              />
+              <img :src="this.PokemonSelect.sprites.front_shiny" alt="shiny" />
+              <p>{{ this.PokemonSelect.id}}</p>
+              <h4>{{this.PokemonSelect.name }}</h4>
+              <button>{{this.PokemonSelect.types[0].type.name}}</button>
+              <button v-if="this.PokemonSelect.types[1]">
+                {{this.PokemonSelect.types[1].type.name}}
+              </button>
+              <ul>
+                <li v-for="(stats,i) in this.PokemonSelect.stats">
+                  <label :for="stats.stat.name">{{stats.stat.name}}</label
+                  ><br />
+                  <input
+                    type="range"
+                    :id="i"
+                    :name="stats.stat.name"
+                    min="0"
+                    max="100"
+                    :value="stats.base_stat"
+                    step="1"
+                  />
+                  <output id="rangeValue">{{stats.base_stat}}</output>
+                </li>
+              </ul>
+              <button @click="this.PokemonSelect=null">Indietro</button>
             </div>
           </div>
         </div>

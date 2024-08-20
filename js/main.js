@@ -15,6 +15,9 @@ createApp({
       loading: true, // Variabile per indicare lo stato di caricamento
       pokemonPerPagina: 20, // Numero di Pokémon per pagina
       Page: 1, // Pagina attuale
+      Pokename: "",
+      PokemonListName: [],
+      PokemonSelect: null,
     };
   },
 
@@ -33,6 +36,7 @@ createApp({
             this.ListAllPokemon = responses.map((response) => response.data);
             this.pokemons = this.ListAllPokemon.sort((a, b) => a.id - b.id);
             this.loading = false;
+            console.log(this.pokemons);
           });
         }
       });
@@ -47,8 +51,30 @@ createApp({
     },
 
     // Metodo per filtrare i Pokémon per tipo
-    filterByType() {},
-
+    filterByType() {
+      this.pokemons = this.ListAllPokemon.sort((a, b) => a.id - b.id);
+      if (this.typeIndex !== "0") {
+        this.PokemonListType = this.pokemons.filter((pokemon) => {
+          // Verifica se uno dei tipi del Pokémon corrisponde al tipo selezionato
+          return pokemon.types.some(
+            (type) => type.type.name === this.typeIndex
+          );
+        });
+        this.pokemons = this.PokemonListType;
+        this.Page = 1;
+        console.log(this.PokemonListType, this.ListAllPokemon);
+      }
+    },
+    filterName() {
+      this.pokemons = this.ListAllPokemon.sort((a, b) => a.id - b.id);
+      if (this.Pokename != "") {
+        this.PokemonListName = this.pokemons.filter((pokemon) => {
+          return pokemon.name.includes(this.Pokename.toLowerCase());
+        });
+        this.pokemons = this.PokemonListName;
+        this.Page = 1;
+      }
+    },
     // Metodo per andare alla pagina successiva
     nextPage() {
       if (this.Page < this.pagineTotali) {
@@ -63,6 +89,10 @@ createApp({
         this.Page--;
         console.log("Previous Page:", this.Page);
       }
+    },
+    ChoosePokemon(id) {
+      this.PokemonSelect = this.pokemons.find((pokemon) => pokemon.id === id);
+      console.log(this.PokemonSelect, this.PokemonSelect.stats[0]);
     },
   },
 
