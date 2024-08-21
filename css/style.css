@@ -3,13 +3,37 @@
   margin: 0;
   box-sizing: border-box;
 }
-
+body {
+  background-color: #313131;
+}
 #app {
   width: 80%;
   margin: 0 auto;
 }
+h1 {
+  text-align: center;
+  text-transform: uppercase;
+  color: gold;
+  text-shadow: 3px 2px black;
+  font-size: 100px;
+  text-decoration: wavy;
+}
 .filter {
-  text-align: end;
+  height: 80px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 10px;
+}
+.filter label {
+  color: white;
+  display: block;
+  margin-bottom: 3px;
+  text-transform: uppercase;
+}
+.filter option {
+  color: black;
+  text-transform: uppercase;
 }
 
 .container {
@@ -17,18 +41,188 @@
   justify-content: flex-start;
   align-items: center;
   flex-wrap: wrap;
+  background-color: red;
 }
-.card {
-  flex-basis: 25%;
+.container .card {
+  width: calc((100% / 4) - 10px);
   padding: 5px;
   text-align: center;
+  border: 1px solid black;
+  box-shadow: 3px 2px black;
+  margin: 5px;
 }
 .card img {
   width: 100%;
 }
-.card h4 {
+.card h4,
+.card p {
+  text-transform: capitalize;
+  color: white;
+}
+.card button {
+  border: 0px;
+  margin: 5px;
+  padding: 5px;
   text-transform: uppercase;
+  box-shadow: 1px 2px black;
 }
 .pagination-button {
   text-align: center;
+  margin: 10px;
+}
+.pagination-button button {
+  margin: 10px;
+  width: 50px;
+  height: 50px;
+  font-weight: bolder;
+  font-size: 40px;
+  border-radius: 50%;
+  text-align: center;
+  border: 0;
+  color: white;
+  background-color: #313131;
+}
+.profile {
+  background-color: white;
+  width: 100%;
+}
+.profile h2 {
+  text-align: center;
+  color: black;
+  text-transform: uppercase;
+  margin: 5px;
+}
+.profile .profile-card {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+.profile .imgbox {
+  width: 300px;
+}
+.profile .imgbox .artwork {
+  width: 100%;
+}
+.profile .imgbox .sprites {
+  width: calc(100% / 3);
+}
+.profile .collum-box {
+  display: flex;
+  align-items: center;
+}
+.profile .collum-box .collum {
+  display: flex;
+  flex-direction: column;
+  align-items: baseline;
+  width: 50px;
+  margin: 1px;
+}
+.profile .collum-box .collum div {
+  width: 10px;
+  height: 1px;
+}
+.profile .collum-box .collum strong {
+  height: 30px;
+  text-wrap: wrap;
+  text-transform: uppercase;
+  font-size: xx-small;
+  margin-top: 3px;
+}
+.profile .collum-box .collum .stat {
+  background-color: blue;
+  width: 50px;
+}
+.evolution-box {
+  display: flex;
+  align-items: center;
+  text-align: center;
+}
+.evolution-box .evolution-card {
+  width: calc(100% / 3)- 20px;
+  margin: 10px;
+}
+.evolution-box .evolution-card img {
+  width: 80%;
+}
+.normal {
+  background-color: #a4acaf;
+  color: white;
+}
+.fighting {
+  background-color: #d56723;
+  color: white;
+}
+.flying {
+  background: linear-gradient(to bottom, #3dc7ef 50%, #bdb9b8 50%);
+  background-color: #3dc7ef;
+  color: white;
+}
+.poison {
+  background-color: #b97fc9;
+  color: white;
+}
+.ground {
+  background: linear-gradient(to bottom, #f7de3f 50%, #ab9842 50%);
+  background-color: #f7de3f;
+  color: white;
+}
+.rock {
+  background-color: #a38c21;
+  color: white;
+}
+.bug {
+  background-color: #729f3f;
+  color: white;
+}
+.ghost {
+  background-color: #7b62a3;
+  color: white;
+}
+
+.steel {
+  background-color: #9eb7b8;
+  color: white;
+}
+.fire {
+  background-color: #fd7d24;
+  color: white;
+}
+.water {
+  background-color: #4592c4;
+  color: white;
+}
+.grass {
+  background-color: #9bcc50;
+  color: white;
+}
+.electric {
+  background-color: #eed535;
+  color: white;
+}
+.psychic {
+  background-color: #f366b9;
+  color: white;
+}
+.ice {
+  background-color: #51c4e7;
+  color: white;
+}
+.dragon {
+  background: linear-gradient(180deg, #53a4cf 50%, #f16e57 50%);
+  background-color: #53a4cf;
+  color: white;
+}
+.dark {
+  background-color: #707070;
+  color: white;
+}
+.fairy {
+  background-color: #fdb9e9;
+  color: white;
+}
+.stellar {
+  background-color: goldenrod;
+}
+.unknown {
+  background-color: wheat;
 }

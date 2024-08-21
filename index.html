@@ -16,6 +16,7 @@
   </head>
   <body>
     <div id="app">
+      <h1>Pokedex</h1>
       <div v-if="loading">
         <!-- Indicatore di caricamento -->
         <p>Loading...</p>
@@ -23,26 +24,38 @@
 
       <div v-else>
         <!-- Contenuto dell'app dopo il caricamento -->
-        <div class="filter">
-          <label for="type">Scelti il tipo che preferisci</label>
-          <select
-            @change="this.filterByType"
-            name="type"
-            id="Type"
-            v-model="this.typeIndex"
-          >
-            <option value="0">All</option>
-            <option v-for="(type,index) in this.typeList" :value="type.name">
-              {{type.name}}
-            </option>
-          </select>
-          <label for="Name">Nome del tuo pokemon preferito</label>
-          <input
-            @keyup="filterName"
-            type="text"
-            name="Name"
-            v-model="this.Pokename"
-          />
+        <div v-if="this.PokemonSelect === null" class="filter">
+          <div>
+            <label for="type">Scelti il tipo che preferisci</label>
+            <select
+              @change="this.filterByType"
+              name="type"
+              id="Type"
+              v-model="this.typeIndex"
+            >
+              <option value="0">All</option>
+              <option
+                :class="type.name"
+                v-for="(type,index) in this.typeList"
+                :value="type.name"
+              >
+                {{type.name}}
+              </option>
+            </select>
+          </div>
+          <div>
+            <label for="Name">Nome del tuo pokemon</label>
+            <input
+              @keyup="filterName"
+              type="text"
+              name="Name"
+              v-model="this.Pokename"
+            />
+          </div>
+        </div>
+        <div v-if="this.PokemonSelect === null" class="pagination-button">
+          <button @click="prevPage"><</button>
+          <button @click="nextPage">></button>
         </div>
         <div class="page">
           <div class="container">
@@ -57,53 +70,110 @@
                 :src="pokemon.sprites.other['official-artwork'].front_default"
                 alt="immagine pokemon"
               />
-              <p>{{ pokemon.id}}</p>
+              <p>ID°{{ pokemon.id}}</p>
               <h4>{{pokemon.name }}</h4>
-              <button>{{pokemon.types[0].type.name}}</button>
-              <button v-if="pokemon.types[1]">
+              <button :class="pokemon.types[0].type.name">
+                {{pokemon.types[0].type.name}}
+              </button>
+              <button
+                v-if="pokemon.types[1]"
+                :class="pokemon.types[1].type.name"
+              >
                 {{pokemon.types[1].type.name}}
               </button>
             </div>
-            <div v-if="this.PokemonSelect !== null" class="card">
-              <img
-                :src="this.PokemonSelect.sprites.other['official-artwork'].front_default"
-                alt="artwork pokemon"
-              />
-              <img :src="this.PokemonSelect.sprites.back_default" alt="bank" />
-              <img
-                :src="this.PokemonSelect.sprites.front_default"
-                alt="front"
-              />
-              <img :src="this.PokemonSelect.sprites.front_shiny" alt="shiny" />
-              <p>{{ this.PokemonSelect.id}}</p>
-              <h4>{{this.PokemonSelect.name }}</h4>
-              <button>{{this.PokemonSelect.types[0].type.name}}</button>
-              <button v-if="this.PokemonSelect.types[1]">
-                {{this.PokemonSelect.types[1].type.name}}
-              </button>
-              <ul>
-                <li v-for="(stats,i) in this.PokemonSelect.stats">
-                  <label :for="stats.stat.name">{{stats.stat.name}}</label
-                  ><br />
-                  <input
-                    type="range"
-                    :id="i"
-                    :name="stats.stat.name"
-                    min="0"
-                    max="100"
-                    :value="stats.base_stat"
-                    step="1"
+            <div v-if="this.PokemonSelect !== null" class="profile">
+              <h2>{{this.PokemonSelect.name }} N°{{ this.PokemonSelect.id}}</h2>
+              <div class="profile-card">
+                <div>
+                  <div class="imgbox">
+                    <img
+                      class="artwork"
+                      :src="this.PokemonSelect.sprites.other['official-artwork'].front_default"
+                      alt="artwork pokemon"
+                    />
+                    <img
+                      class="sprites"
+                      :src="this.PokemonSelect.sprites.back_default"
+                      alt="bank"
+                    />
+                    <img
+                      class="sprites"
+                      :src="this.PokemonSelect.sprites.front_default"
+                      alt="front"
+                    />
+                    <img
+                      class="sprites"
+                      :src="this.PokemonSelect.sprites.front_shiny"
+                      alt="shiny"
+                    />
+                  </div>
+
+                  <div class="collum-box">
+                    <div
+                      class="collum"
+                      v-for="(stats,i) in this.PokemonSelect.stats"
+                    >
+                      <div v-for="n in (200 - stats.base_stat)"></div>
+                      <div class="stat" v-for="n in stats.base_stat"></div>
+                      <strong>{{stats.stat.name}}</strong>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <p>{{this.PokemonDescrizione}}</p>
+                  <div class="state">
+                    <h4>Altezza</h4>
+                    <p>{{this.PokemonSelect.height}}</p>
+                    <h4>Peso</h4>
+                    <p>{{this.PokemonSelect.weight}}</p>
+                    <h4>Abilità</h4>
+                    <ul>
+                      <li v-for="ability in this.PokemonSelect.abilities">
+                        {{ability.ability.name}}
+                      </li>
+                    </ul>
+                    <h4>Tipo</h4>
+                    <button :class="this.PokemonSelect.types[0].type.name">
+                      {{this.PokemonSelect.types[0].type.name}}
+                    </button>
+                    <button
+                      v-if="this.PokemonSelect.types[1]"
+                      :class="this.PokemonSelect.types[1].type.name"
+                    >
+                      {{this.PokemonSelect.types[1].type.name}}
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div class="evolution-box">
+                <div
+                  class="evolution-card"
+                  v-for="evoluzione in this.CatenaEvolutiva"
+                >
+                  <img
+                    :src="evoluzione.sprites.other['official-artwork'].front_default"
+                    alt=""
                   />
-                  <output id="rangeValue">{{stats.base_stat}}</output>
-                </li>
-              </ul>
+                  <h3>{{evoluzione.name}} N°{{evoluzione.id}}</h3>
+                  <button :class="evoluzione.types[0].type.name">
+                    {{evoluzione.types[0].type.name}}
+                  </button>
+                  <button
+                    v-if="evoluzione.types[1]"
+                    :class="evoluzione.types[1].type.name"
+                  >
+                    {{evoluzione.types[1].type.name}}
+                  </button>
+                </div>
+              </div>
               <button @click="this.PokemonSelect=null">Indietro</button>
             </div>
           </div>
         </div>
-        <div class="pagination-button">
-          <button @click="prevPage">Prev</button>
-          <button @click="nextPage">Next</button>
+        <div v-if="this.PokemonSelect === null" class="pagination-button">
+          <button @click="prevPage"><</button>
+          <button @click="nextPage">></button>
         </div>
       </div>
     </div>
