@@ -10,20 +10,20 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     ></script>
-    <!-- Collegamento del file CSS -->
     <link rel="stylesheet" href="./css/style.css" />
     <title>Pokedex</title>
   </head>
   <body>
     <div id="app">
       <h1>Pokedex</h1>
+
+      <!-- Indicatore di caricamento -->
       <div v-if="loading">
-        <!-- Indicatore di caricamento -->
         <p>Loading...</p>
       </div>
 
       <div v-else>
-        <!-- Contenuto dell'app dopo il caricamento -->
+        <!-- Sezione di filtro, visibile solo se non è selezionato alcun Pokémon -->
         <div v-if="this.PokemonSelect === null" class="filter">
           <div>
             <label for="type">Scelti il tipo che preferisci</label>
@@ -34,6 +34,7 @@
               v-model="this.typeIndex"
             >
               <option value="0">All</option>
+              <!-- Ciclo per generare opzioni di tipo -->
               <option
                 :class="type.name"
                 v-for="(type,index) in this.typeList"
@@ -45,6 +46,7 @@
           </div>
           <div>
             <label for="Name">Nome del tuo pokemon</label>
+            <!-- Input per filtrare i Pokémon per nome -->
             <input
               @keyup="filterName"
               type="text"
@@ -53,12 +55,17 @@
             />
           </div>
         </div>
+
+        <!-- Paginazione, visibile solo se non è selezionato alcun Pokémon -->
         <div v-if="this.PokemonSelect === null" class="pagination-button">
           <button @click="prevPage"><</button>
           <button @click="nextPage">></button>
         </div>
+
+        <!-- Container principale per la visualizzazione dei Pokémon -->
         <div class="page">
           <div class="container">
+            <!-- Ciclo per visualizzare le card dei Pokémon, visibile solo se non è selezionato alcun Pokémon -->
             <div
               v-show="this.PokemonSelect === null"
               v-for="pokemon in this.pokemonInPagina"
@@ -70,11 +77,14 @@
                 :src="pokemon.sprites.other['official-artwork'].front_default"
                 alt="immagine pokemon"
               />
+
               <p>ID°{{ pokemon.id}}</p>
               <h4>{{pokemon.name }}</h4>
+
               <button :class="pokemon.types[0].type.name">
                 {{pokemon.types[0].type.name}}
               </button>
+
               <button
                 v-if="pokemon.types[1]"
                 :class="pokemon.types[1].type.name"
@@ -82,6 +92,8 @@
                 {{pokemon.types[1].type.name}}
               </button>
             </div>
+
+            <!-- Sezione dettagli Pokémon, visibile solo se è selezionato un Pokémon -->
             <div v-if="this.PokemonSelect !== null" class="profile">
               <h2>{{this.PokemonSelect.name }} N°{{ this.PokemonSelect.id}}</h2>
               <div class="profile-card">
@@ -109,68 +121,85 @@
                     />
                   </div>
 
+                  <!-- Box per la visualizzazione delle statistiche del Pokémon -->
                   <div class="collum-box">
                     <div
                       class="collum"
                       v-for="(stats,i) in this.PokemonSelect.stats"
                     >
+                      <!-- Statistiche base del Pokémon -->
                       <div v-for="n in (200 - stats.base_stat)"></div>
                       <div class="stat" v-for="n in stats.base_stat"></div>
                       <strong>{{stats.stat.name}}</strong>
                     </div>
                   </div>
                 </div>
-                <div>
+
+                <!-- Sezione informazioni dettagliate del Pokémon -->
+                <div class="info">
+                  <h4>Descrizione</h4>
                   <p>{{this.PokemonDescrizione}}</p>
+
+                  <!-- Stato fisico del Pokémon (altezza, peso, abilità, tipo) -->
                   <div class="state">
-                    <h4>Altezza</h4>
-                    <p>{{this.PokemonSelect.height}}</p>
-                    <h4>Peso</h4>
-                    <p>{{this.PokemonSelect.weight}}</p>
-                    <h4>Abilità</h4>
-                    <ul>
-                      <li v-for="ability in this.PokemonSelect.abilities">
-                        {{ability.ability.name}}
-                      </li>
-                    </ul>
-                    <h4>Tipo</h4>
-                    <button :class="this.PokemonSelect.types[0].type.name">
-                      {{this.PokemonSelect.types[0].type.name}}
-                    </button>
-                    <button
-                      v-if="this.PokemonSelect.types[1]"
-                      :class="this.PokemonSelect.types[1].type.name"
+                    <div>
+                      <h4>Altezza</h4>
+                      <p>{{this.PokemonSelect.height}}M</p>
+                      <h4>Peso</h4>
+                      <p>{{this.PokemonSelect.weight}}Kg</p>
+                    </div>
+                    <div>
+                      <h4>Abilità</h4>
+                      <ul>
+                        <!-- Lista abilità del Pokémon -->
+                        <li v-for="ability in this.PokemonSelect.abilities">
+                          {{ability.ability.name}}
+                        </li>
+                      </ul>
+                      <h4>Tipo</h4>
+                      <button :class="this.PokemonSelect.types[0].type.name">
+                        {{this.PokemonSelect.types[0].type.name}}
+                      </button>
+                      <button
+                        v-if="this.PokemonSelect.types[1]"
+                        :class="this.PokemonSelect.types[1].type.name"
+                      >
+                        {{this.PokemonSelect.types[1].type.name}}
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Sezione evoluzione del Pokémon -->
+                  <div class="evolution-box">
+                    <div
+                      class="evolution-card"
+                      v-for="evoluzione in this.CatenaEvolutiva"
                     >
-                      {{this.PokemonSelect.types[1].type.name}}
-                    </button>
+                      <img
+                        :src="evoluzione.sprites.other['official-artwork'].front_default"
+                        alt=""
+                      />
+                      <h3>{{evoluzione.name}} N°{{evoluzione.id}}</h3>
+                      <button :class="evoluzione.types[0].type.name">
+                        {{evoluzione.types[0].type.name}}
+                      </button>
+                      <button
+                        v-if="evoluzione.types[1]"
+                        :class="evoluzione.types[1].type.name"
+                      >
+                        {{evoluzione.types[1].type.name}}
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
-              <div class="evolution-box">
-                <div
-                  class="evolution-card"
-                  v-for="evoluzione in this.CatenaEvolutiva"
-                >
-                  <img
-                    :src="evoluzione.sprites.other['official-artwork'].front_default"
-                    alt=""
-                  />
-                  <h3>{{evoluzione.name}} N°{{evoluzione.id}}</h3>
-                  <button :class="evoluzione.types[0].type.name">
-                    {{evoluzione.types[0].type.name}}
-                  </button>
-                  <button
-                    v-if="evoluzione.types[1]"
-                    :class="evoluzione.types[1].type.name"
-                  >
-                    {{evoluzione.types[1].type.name}}
-                  </button>
-                </div>
-              </div>
+
+              <!-- Bottone per tornare indietro alla lista Pokémon -->
               <button @click="this.PokemonSelect=null">Indietro</button>
             </div>
           </div>
         </div>
+
         <div v-if="this.PokemonSelect === null" class="pagination-button">
           <button @click="prevPage"><</button>
           <button @click="nextPage">></button>
