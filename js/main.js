@@ -81,9 +81,19 @@ createApp({
 
     // Metodo per filtrare i Pokémon per nome
     filterName() {
-      this.pokemons = this.ListAllPokemon.sort((a, b) => a.id - b.id);
       // Se è stato inserito un nome nel campo di ricerca
-      if (this.Pokename != "") {
+      if (this.Pokename != "" && this.typeIndex == "0") {
+        this.pokemons = this.ListAllPokemon.sort((a, b) => a.id - b.id);
+        this.PokemonListName = this.pokemons.filter((pokemon) => {
+          // Filtra i Pokémon per nome
+          return pokemon.name.includes(this.Pokename.toLowerCase());
+        });
+        // Aggiorna la lista dei Pokémon filtrati per nome
+        this.pokemons = this.PokemonListName;
+
+        this.Page = 1;
+      } else if (this.Pokename != "" && this.typeIndex != "0") {
+        this.pokemons = this.PokemonListType;
         this.PokemonListName = this.pokemons.filter((pokemon) => {
           // Filtra i Pokémon per nome
           return pokemon.name.includes(this.Pokename.toLowerCase());
