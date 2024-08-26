@@ -142,9 +142,34 @@ createApp({
             responsespiecie.data.flavor_text_entries[51].flavor_text;
           // Salva l'URL della catena evolutiva
           this.PokemonSpecisUrl = responsespiecie.data.evolution_chain.url;
+
           if (this.PokemonSpecisUrl != null) {
             // Effettua una richiesta per ottenere la catena evolutiva del Pokémon
             axios.get(this.PokemonSpecisUrl).then((resptoevol) => {
+              console.log(resptoevol.data.chain, "qui");
+
+              let evoluzioni = [];
+              // Se la specie non è una forma "baby"
+              if (resptoevol.data.chain.is_baby != true) {
+                evoluzioni = this.ottieniEvoluzioni(resptoevol.data.chain);
+              } else {
+                // Se la specie è una forma "baby", parte dalla prima evoluzione
+                evoluzioni = this.ottieniEvoluzioni(
+                  resptoevol.data.chain.evolves_to[0]
+                );
+              }
+
+              // Filtra la lista dei Pokémon per includere solo quelli nella catena evolutiva
+              this.CatenaEvolutiva = this.pokemons.filter((pokemon) => {
+                return evoluzioni.includes(pokemon.name);
+              });
+            });
+          }
+          /* if (this.PokemonSpecisUrl != null) {
+            // Effettua una richiesta per ottenere la catena evolutiva del Pokémon
+            axios.get(this.PokemonSpecisUrl).then((resptoevol) => {
+              console.log(resptoevol.data.chain, "qui");
+
               let evoluzioni = [];
               // Se la specie non è una forma "baby"
               if (resptoevol.data.chain.is_baby != true) {
@@ -179,11 +204,25 @@ createApp({
               this.CatenaEvolutiva = this.pokemons.filter((pokemon) => {
                 return evoluzioni.includes(pokemon.name);
               });
-              console.log(this.CatenaEvolutiva);
+                 console.log(this.CatenaEvolutiva);
             });
-          }
+          } */
         });
       }
+    },
+    // Funzione ricorsiva per ottenere tutte le evoluzioni
+    ottieniEvoluzioni(catenaEvo) {
+      let evoluzioni = [];
+      let nomeSpecie = catenaEvo.species.name;
+      evoluzioni.push(nomeSpecie);
+
+      // Verifica se ci sono evoluzioni successive
+      if (catenaEvo.evolves_to.length > 0) {
+        catenaEvo.evolves_to.forEach((evoluzione) => {
+          evoluzioni = evoluzioni.concat(this.ottieniEvoluzioni(evoluzione));
+        });
+      }
+      return evoluzioni;
     },
   },
 
