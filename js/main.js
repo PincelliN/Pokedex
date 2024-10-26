@@ -165,48 +165,6 @@ createApp({
               });
             });
           }
-          /* if (this.PokemonSpecisUrl != null) {
-            // Effettua una richiesta per ottenere la catena evolutiva del Pokémon
-            axios.get(this.PokemonSpecisUrl).then((resptoevol) => {
-              console.log(resptoevol.data.chain, "qui");
-
-              let evoluzioni = [];
-              // Se la specie non è una forma "baby"
-              if (resptoevol.data.chain.is_baby != true) {
-                let PrimaForma = resptoevol.data.chain.species.name;
-                evoluzioni.push(PrimaForma);
-                // Aggiunge alla lista l'evoluzione successiva, se esiste
-                if (resptoevol.data.chain.evolves_to[0]) {
-                  let Secondaforma =
-                    resptoevol.data.chain.evolves_to[0].species.name;
-                  evoluzioni.push(Secondaforma);
-                  // Aggiunge alla lista l'evoluzione finale, se esiste
-                  if (resptoevol.data.chain.evolves_to[0].evolves_to[0]) {
-                    let TerzaForma =
-                      resptoevol.data.chain.evolves_to[0].evolves_to[0].species
-                        .name;
-                    evoluzioni.push(TerzaForma);
-                  }
-                }
-              } else {
-                // Se la specie è una forma "baby", aggiunge solo le evoluzioni successive
-                let PrimaForma =
-                  resptoevol.data.chain.evolves_to[0].species.name;
-                evoluzioni.push(PrimaForma);
-                if (resptoevol.data.chain.evolves_to[0].evolves_to[0]) {
-                  let Secondaforma =
-                    resptoevol.data.chain.evolves_to[0].evolves_to[0].species
-                      .name;
-                  evoluzioni.push(Secondaforma);
-                }
-              }
-              // Filtra la lista dei Pokémon per includere solo quelli nella catena evolutiva
-              this.CatenaEvolutiva = this.pokemons.filter((pokemon) => {
-                return evoluzioni.includes(pokemon.name);
-              });
-                 console.log(this.CatenaEvolutiva);
-            });
-          } */
         });
       }
     },

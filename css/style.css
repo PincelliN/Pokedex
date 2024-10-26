@@ -19,7 +19,7 @@ h1 {
   text-align: center;
   text-transform: uppercase;
   color: gold;
-  text-shadow: 3px 2px black;
+  text-shadow: 3px 2px rgb(53, 48, 48);
   font-size: 100px;
   text-decoration: wavy;
 }
@@ -51,7 +51,6 @@ h1 {
   justify-content: flex-start;
   align-items: center;
   flex-wrap: wrap;
-  background-color: red;
 }
 
 .container .card {
@@ -59,7 +58,10 @@ h1 {
   padding: 5px;
   text-align: center;
   border: 1px solid black;
+  border-radius: 3%;
+
   box-shadow: 3px 2px black;
+  background-color: rgb(249, 249, 249);
   margin: 5px;
 }
 
@@ -70,7 +72,7 @@ h1 {
 .card h4,
 .card p {
   text-transform: capitalize;
-  color: white;
+  color: rgb(0, 0, 0);
 }
 
 .card button {
@@ -186,7 +188,7 @@ h1 {
   align-items: start;
   margin-top: 10px;
   padding: 10px;
-  border-radius: 25px;
+  border-radius: 5px;
   background-color: #107b99;
   box-shadow: 2px 3px black;
 }
@@ -229,6 +231,12 @@ h1 {
   text-transform: capitalize;
 }
 
+.back-button {
+  border-radius: 5px;
+  background-color: #707070;
+  color: white;
+  margin-bottom: 10px !important;
+}
 /* Classi dei tipi */
 .normal {
   background-color: #a4acaf;
